@@ -16,12 +16,13 @@
 
 package hello;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import io.spring.guides.gs_producing_web_service.GetCountryRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -30,9 +31,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ClassUtils;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
+import io.spring.guides.gs_producing_web_service.GetCountryRequest;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ApplicationIntegrationTests {
+
+	Logger log = LoggerFactory.getLogger(ApplicationIntegrationTests.class);
 
     private Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 
@@ -50,6 +55,9 @@ public class ApplicationIntegrationTests {
         WebServiceTemplate ws = new WebServiceTemplate(marshaller);
         GetCountryRequest request = new GetCountryRequest();
         request.setName("Spain");
+        request.setNumber(3);
+        
+        log.debug("Request content" + request.toString());
 
         assertThat(ws.marshalSendAndReceive("http://localhost:"
                 + port + "/ws", request)).isNotNull();
